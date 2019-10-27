@@ -5,11 +5,13 @@ import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
 // eslint-disable-next-line
 import pageLink from './pageLink';
+import pageErrorLink from './pageErrorLink';
 
 const URI = 'http://localhost:5000/graphql';
 
 export default new ApolloClient({
   link: ApolloLink.from([
+    pageErrorLink,
     pageLink,
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
