@@ -6,16 +6,17 @@ export interface Book {
   title: string;
 }
 
-export interface BookUpdate extends Book {
-  isDeleted: boolean;
-}
-
 export interface BooksData {
   books: Book[];
 }
 
-export interface BooksUpdateData {
-  booksUpdate: BookUpdate[];
+interface BooksPage {
+  books: Book[];
+  count: number;
+}
+
+export interface BooksPageData {
+  booksPage: BooksPage;
 }
 
 export const BOOKS = gql`
@@ -28,14 +29,16 @@ export const BOOKS = gql`
   }
 `;
 
-export const BOOKS_UPDATE = gql`
-  query booksUpdate($lastModified: Int!) {
-    booksUpdate(lastModified: $lastModified) {
-      author
-      id
-      isDeleted
-      title
-      __typename
+export const BOOKS_PAGE = gql`
+  query booksPage($offset: Int!, $first: Int!) {
+    booksPage(input: { offset: $offset, first: $first }) {
+      books {
+        author
+        id
+        title
+        __typename
+      }
+      count
     }
   }
 `;

@@ -3,13 +3,11 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
-import pageLink from './pageLink';
 
 const URI = 'http://localhost:5000/graphql';
 
 export default new ApolloClient({
   link: ApolloLink.from([
-    pageLink,
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
         graphQLErrors.forEach(({ message, locations, path }) =>
