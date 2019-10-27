@@ -1,6 +1,9 @@
 import { useQuery } from '@apollo/react-hooks';
 import React, { FC, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { Book, BooksData, BOOKS } from '../graphql/books';
+import { getPageError } from '../store/ducks/pageError';
+import { getPageLoading } from '../store/ducks/pageLoading';
 
 const bookSort = (a: Book, b: Book): number => {
   if (a.id < b.id) {
@@ -13,12 +16,14 @@ const bookSort = (a: Book, b: Book): number => {
 };
 
 const Books: FC = () => {
-  const { loading, error, data, refetch } = useQuery<BooksData>(BOOKS);
+  const pageError = useSelector(getPageError);
+  const pageLoading = useSelector(getPageLoading);
+  const { data, refetch } = useQuery<BooksData>(BOOKS);
   const handleClick = useCallback(() => {
     refetch();
   }, [refetch]);
-  if (loading) return <p>Loading...</p>;
-  if (error || data === undefined) return <p>Error :(</p>;
+  if (pageLoading) return <p>Loading...</p>;
+  if (pageError || data === undefined) return <p>Error :(</p>;
   const sortedBooks = data.books.sort(bookSort); // CANNOT USE USEMEMO HERE
   return (
     <div>
