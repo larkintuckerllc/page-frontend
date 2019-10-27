@@ -7,7 +7,7 @@ import client from '../graphql/client';
 import store from '../store';
 import { getPageCount, setPageCount } from '../store/ducks/pageCount';
 import { setPageLoading } from '../store/ducks/pageLoading';
-import { setPageError } from '../store/ducks/pageError';
+import { getPageError, setPageError } from '../store/ducks/pageError';
 
 // eslint-disable-next-line
 type Data = { [key: string]: any };
@@ -47,6 +47,7 @@ const transformedData = (operationName: string, cache: ApolloCache<object>, data
   switch (operationName) {
     case 'books': {
       const state = store.getState();
+      const pageError = getPageError(state);
       const pageCount = getPageCount(state);
       const {
         booksPage: { books, count },
@@ -62,7 +63,7 @@ const transformedData = (operationName: string, cache: ApolloCache<object>, data
       }
 
       // QUEUE UP NEXT PAGE
-      if (!isLastPage) {
+      if (!isLastPage && !pageError) {
         dispatch(setPageCount(pageCount + 1));
         setTimeout(() => {
           client.query({
